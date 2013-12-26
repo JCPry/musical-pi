@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A0849BDE186BBC9700476831 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0849BDD186BBC9700476831 /* main.cpp */; };
 		A0849BE0186BBC9700476831 /* Christmas_Lights.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = A0849BDF186BBC9700476831 /* Christmas_Lights.1 */; };
+		A0849BE9186BC35800476831 /* lightorgan-sample.c in Sources */ = {isa = PBXBuildFile; fileRef = A0849BE8186BC35800476831 /* lightorgan-sample.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,7 @@
 		A0849BDA186BBC9700476831 /* Christmas Lights */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Christmas Lights"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0849BDD186BBC9700476831 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A0849BDF186BBC9700476831 /* Christmas_Lights.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Christmas_Lights.1; sourceTree = "<group>"; };
+		A0849BE8186BC35800476831 /* lightorgan-sample.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "lightorgan-sample.c"; sourceTree = "<group>"; usesTabs = 1; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				A0849BDD186BBC9700476831 /* main.cpp */,
 				A0849BDF186BBC9700476831 /* Christmas_Lights.1 */,
+				A0849BE8186BC35800476831 /* lightorgan-sample.c */,
 			);
 			path = "Christmas Lights";
 			sourceTree = "<group>";
@@ -117,6 +120,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0849BE9186BC35800476831 /* lightorgan-sample.c in Sources */,
 				A0849BDE186BBC9700476831 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
