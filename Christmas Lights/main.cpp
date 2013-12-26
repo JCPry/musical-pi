@@ -89,7 +89,7 @@ void midi_process( snd_seq_event_t *ev ) {
 
 int main() {
 
-    // Start as a daemon
+	// Start as a daemon
 	if ( daemon( 0, 0 ) != 0 ) {
 		exit( 1 );
 	}
