@@ -148,49 +148,30 @@ void midi_process(snd_seq_event_t *ev)
     }
 
     //Note on/off event
-    else if ( ((ev->type == SND_SEQ_EVENT_NOTEON)||(ev->type == SND_SEQ_EVENT_NOTEOFF)) ) {
-        
-  
-        //choose the output pin based on the pitch of the note
-        int pinIdx = choosePinIdx(ev->data.note.note, ev->data.note.channel);
+    else if (ev->type == SND_SEQ_EVENT_NOTEON || ev->type == SND_SEQ_EVENT_NOTEOFF) {
 
+        printf("Turning off pin %d\n", pinActive);
 
-        if(!isPercussionChannel(ev->data.note.channel) ) { 
-           int isOn = 1;
-           //Note velocity == 0 means the same thing as a NOTEOFF type event
-           if( ev->data.note.velocity == 0 || ev->type == SND_SEQ_EVENT_NOTEOFF) {
-              isOn = 0;
-           }
+        // First turn off the current pin
+        myDigitalWrite(pinActive, 0);
 
+        // Reset to zero if we're above the number of pins
+        if (pinActive > TOTAL_PINS) {
+            printf("Resetting pinActive to zero\n");
+            pinActive = 0;
+        } else {
+            printf("Incrementing pinActive\n");
+            pinActive++;
+        }
 
-           //If pin is set to be turned on
-           if( isOn ) {
-              //If pin is currently available to play a note, or if currently playing channel can be overriden due to higher priority channel
-              if( pinNotes[pinIdx] == -1 || pinChannels[pinIdx] > ev->data.note.channel )  {
-                      
-                 if( (pinChannels[pinIdx] > ev->data.note.channel ) && pinNotes[pinIdx] != -1)  {
-                    //printf("OVERRIDING CHANNEL %i for %i\n", pinChannels[pinIdx], ev->data.note.channel);
-                 }
-                 //Write to the pin, save the note to pinNotes
-                 //printf("Pin %i - %s %i %i \n", pinIdx, isOn ? "on" : "off", ev->data.note.note, ev->data.note.channel);       
-                 myDigitalWrite(pinIdx, 1); 
-                 pinNotes[pinIdx] = ev->data.note.note;
-                 pinChannels[pinIdx] =  ev->data.note.channel;
-              }
-           }
-           
-           //Pin is to be turned off
-           else {
-              //If this is the note that turned the pin on..
-              if( pinNotes[pinIdx] == ev->data.note.note && pinChannels[pinIdx] == ev->data.note.channel ) {
-                 //Write to the pin, indicate that pin is available
-                 //printf("Pin %i - %s %i %i \n", pinIdx, isOn ? "on" : "off", ev->data.note.note, ev->data.note.channel);       
-                 myDigitalWrite(pinIdx, 0); 
-                 pinNotes[pinIdx] = -1;
-                 pinChannels[pinIdx] = INT_MAX;
-              }
-           }
-       }
+        printf("Activating pin %d\n", pinActive);
+        myDigitalWrite(pinActive, 1);
+
+        int isOn = 1;
+        //Note velocity == 0 means the same thing as a NOTEOFF type event
+        if (ev->data.note.velocity == 0 || ev->type == SND_SEQ_EVENT_NOTEOFF) {
+            isOn = 0;
+        }
 
     }
     
