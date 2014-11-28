@@ -188,6 +188,9 @@ void midi_process(snd_seq_event_t *ev)
                 printf("Incrementing pinActive\n");
                 pinActive++;
             }
+
+            // Turn on the next pin
+            pinOn(pinActive);
         }
     }
 
