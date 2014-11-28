@@ -164,7 +164,7 @@ void midi_process(snd_seq_event_t *ev)
 
     if (channelActive == ev->data.control.channel) {
         // Note on/off event
-        if (ev->type == SND_SEQ_EVENT_NOTEON || ev->type == SND_SEQ_EVENT_NOTEOFF) {
+        if (ev->type == SND_SEQ_EVENT_NOTEON) {
 
             printf("Turning off pin %d\n", pinActive);
 
