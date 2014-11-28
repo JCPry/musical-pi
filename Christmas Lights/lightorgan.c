@@ -152,42 +152,34 @@ int choosePinIdx(int note, int channel)
 void midi_process(snd_seq_event_t *ev)
 {
 
-    //If this event is a PGMCHANGE type, it's a request to map a channel to an instrument
-    if (ev->type == SND_SEQ_EVENT_PGMCHANGE) {
-        //printf("PGMCHANGE: channel %2d, %5d, %5d\n", ev->data.control.channel, ev->data.control.param,  ev->data.control.value);
+    // If this event is a PGMCHANGE type, it's a request to map a channel to an instrument
+//    if (ev->type == SND_SEQ_EVENT_PGMCHANGE) {
+//        //printf("PGMCHANGE: channel %2d, %5d, %5d\n", ev->data.control.channel, ev->data.control.param,  ev->data.control.value);
+//
+//        //Clear pins state, this is probably the beginning of a new song
+//        clearPinsState();
+//
+//        setChannelInstrument(ev->data.control.channel, ev->data.control.value);
+//    }
 
-        //Clear pins state, this is probably the beginning of a new song
-        clearPinsState();
+    if (channelActive == ev->data.control.channel) {
+        // Note on/off event
+        if (ev->type == SND_SEQ_EVENT_NOTEON || ev->type == SND_SEQ_EVENT_NOTEOFF) {
 
-        setChannelInstrument(ev->data.control.channel, ev->data.control.value);
-    }
+            printf("Turning off pin %d\n", pinActive);
 
-    //Note on/off event
-    else if (ev->type == SND_SEQ_EVENT_NOTEON || ev->type == SND_SEQ_EVENT_NOTEOFF) {
+            // First turn off the current pin
+            myDigitalWrite(pinActive, 0);
 
-        printf("Turning off pin %d\n", pinActive);
-
-        // First turn off the current pin
-        myDigitalWrite(pinActive, 0);
-
-        // Reset to zero if we're above the number of pins
-        if (pinActive > TOTAL_PINS) {
-            printf("Resetting pinActive to zero\n");
-            pinActive = 0;
-        } else {
-            printf("Incrementing pinActive\n");
-            pinActive++;
+            // Reset to zero if we're above the number of pins
+            if (pinActive > TOTAL_PINS) {
+                printf("Resetting pinActive to zero\n");
+                pinActive = 0;
+            } else {
+                printf("Incrementing pinActive\n");
+                pinActive++;
+            }
         }
-
-        printf("Activating pin %d\n", pinActive);
-        myDigitalWrite(pinActive, 1);
-
-        int isOn = 1;
-        //Note velocity == 0 means the same thing as a NOTEOFF type event
-        if (ev->data.note.velocity == 0 || ev->type == SND_SEQ_EVENT_NOTEOFF) {
-            isOn = 0;
-        }
-
     }
 
     else {
