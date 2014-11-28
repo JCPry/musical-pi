@@ -23,6 +23,9 @@ int pinMapping[] = {
 // The currently active pin.
 int pinActive;
 
+// Channel to monitor for events
+int channelActive = 1;
+
 #define TOTAL_PINS sizeof(pinMapping) / sizeof(int)
 #define THRUPORTCLIENT 14
 #define THRUPORTPORT 0
