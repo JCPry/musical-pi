@@ -98,7 +98,7 @@ void pinsOn()
 {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
-        myDigitalWrite(i, 1);
+        myDigitalWrite(i, 0);
     }
 }
 
