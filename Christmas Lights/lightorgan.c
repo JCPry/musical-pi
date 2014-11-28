@@ -95,10 +95,20 @@ void clearPinsState()
 }
 
 void pinsOn()
+void pinOn(int id)
+{
+    myDigitalWrite(id, 0);
+}
+
+void pinOff(int id)
+{
+    myDigitalWrite(id, 1);
+}
+
 {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
-        myDigitalWrite(i, 0);
+        pinOn(i);
     }
 }
 
@@ -106,7 +116,7 @@ void pinsOff()
 {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
-        myDigitalWrite(i, 1);
+        pinOff(i);
     }
 }
 
@@ -169,7 +179,7 @@ void midi_process(snd_seq_event_t *ev)
             printf("Turning off pin %d\n", pinActive);
 
             // First turn off the current pin
-            myDigitalWrite(pinActive, 0);
+            pinOff(pinActive);
 
             // Reset to zero if we're above the number of pins
             if (pinActive > TOTAL_PINS) {
