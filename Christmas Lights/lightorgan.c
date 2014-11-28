@@ -94,7 +94,6 @@ void clearPinsState()
     clearPinChannels();
 }
 
-void pinsOn()
 void pinOn(int id)
 {
     myDigitalWrite(id, 0);
@@ -105,6 +104,7 @@ void pinOff(int id)
     myDigitalWrite(id, 1);
 }
 
+void allOn()
 {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
@@ -112,14 +112,13 @@ void pinOff(int id)
     }
 }
 
-void pinsOff()
+void allOff()
 {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
         pinOff(i);
     }
 }
-
 
 void setChannelInstrument(int channel, int instr)
 {
@@ -215,7 +214,7 @@ int main()
     }
 
     clearPinsState();
-    pinsOff();
+    allOff();
 
     //Open a midi port, connect to thru port also
     midi_open();

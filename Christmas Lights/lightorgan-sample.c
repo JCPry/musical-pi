@@ -87,14 +87,14 @@ void clearPinsState() {
     clearPinChannels();
 }
 
-void pinsOn() {
+void allOn() {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
         digitalWrite(i, 1);
     }
 }
 
-void pinsOff() {
+void allOff() {
     int i;
     for(i=0; i< TOTAL_PINS; i++) {
         digitalWrite(i, 1);
