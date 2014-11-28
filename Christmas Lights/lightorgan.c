@@ -20,6 +20,9 @@ int pinMapping[] = {
 3, //3
 };
 
+// The currently active pin.
+int pinActive;
+
 #define TOTAL_PINS sizeof(pinMapping) / sizeof(int)
 #define THRUPORTCLIENT 14
 #define THRUPORTPORT 0
