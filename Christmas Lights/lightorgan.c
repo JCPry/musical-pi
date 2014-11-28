@@ -213,6 +213,7 @@ int main()
     }
 
     clearPinsState();
+    pinsOff();
 
     //Open a midi port, connect to thru port also
     midi_open();
