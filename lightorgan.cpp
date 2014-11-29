@@ -75,9 +75,6 @@ void setPinModes(int mode)
     }
 }
 
-/**
- * Signal Handler
- */
 void signalHandler(int signum)
 {
     printf("Interrupt signal (%d) received", signum);
@@ -105,7 +102,6 @@ void midi_open(void)
 
 }
 
-
 snd_seq_event_t *midi_read(void)
 {
     snd_seq_event_t *ev = NULL;
@@ -113,38 +109,10 @@ snd_seq_event_t *midi_read(void)
     return ev;
 }
 
-
-// Currently playing note, by pin
-int pinNotes[TOTAL_PINS];
-
-// Currently playing channel, by pin
-int pinChannels[TOTAL_PINS];
-
-// Enabled channels
-int playChannels[16];
-
-
-void clearPinNotes()
-{
-    int i;
-    for(i=0; i< TOTAL_PINS; i++) {
-       pinNotes[i] = -1;
-    }
-}
-
 void myDigitalWrite(int pinIdx, int val)
 {
     val ? printf("%i (%i) ON\n", pinIdx, pinMapping[pinIdx]) : printf("%i (%i) OFF\n", pinIdx, pinMapping[pinIdx]);
     digitalWrite(pinMapping[pinIdx], val);
-}
-
-
-void clearPinChannels()
-{
-    int i;
-    for(i=0; i< TOTAL_PINS; i++) {
-       pinChannels[i] = INT_MAX;
-    }
 }
 
 void pinOn(int id, char verbose='n')
@@ -191,27 +159,12 @@ void allOff()
     }
 }
 
-void clearPinsState()
-{
-    clearPinNotes();
-    clearPinChannels();
-    allOff();
-}
-
-void setChannelInstrument(int channel, int instr)
-{
-    printf("setting channel %i to instrument %i\n", channel, instr);
-    playChannels[channel] = instr;
-}
-
-
 int choosePinIdx(int note, int channel)
 {
     // Return the note modulated by the number of melody pins
     int val = note  % (TOTAL_PINS * 2);
     return val / 2;
 }
-
 
 void midi_process(snd_seq_event_t *ev)
 {
@@ -221,7 +174,7 @@ void midi_process(snd_seq_event_t *ev)
         //printf("PGMCHANGE: channel %2d, %5d, %5d\n", ev->data.control.channel, ev->data.control.param,  ev->data.control.value);
 
         // Clear pins state, this is probably the beginning of a new song
-        clearPinsState();
+        allOff();
 
         setChannelInstrument(ev->data.control.channel, ev->data.control.value);
     }
