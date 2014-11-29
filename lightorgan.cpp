@@ -7,6 +7,21 @@
 static snd_seq_t *seq_handle;
 static int in_port;
 
+// Pre-declare all functions
+void allOff();
+void allOn();
+int choosePinIdx(int note, int channel);
+void midi_open();
+void midi_process(snd_seq_event_t *ev);
+snd_seq_event_t *midi_read();
+void myDigitalWrite(int pinIdx, int val);
+void pinOff(int id, char verbose);
+void pinOn(int id, char verbose);
+void setChannelInstrument(int channel, int instr);
+void setPinModes(int mode);
+void signalHandler(int signum);
+
+// Constants
 
 // The total number of pins available.
 int pinMapping[] = {
