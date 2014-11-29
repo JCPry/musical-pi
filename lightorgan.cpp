@@ -111,12 +111,6 @@ void clearPinChannels()
     }
 }
 
-void clearPinsState()
-{
-    clearPinNotes();
-    clearPinChannels();
-}
-
 void pinOn(int id, char verbose='n')
 {
     switch (verbose) {
@@ -159,6 +153,13 @@ void allOff()
     for(i=0; i< TOTAL_PINS; i++) {
         pinOff(i);
     }
+}
+
+void clearPinsState()
+{
+    clearPinNotes();
+    clearPinChannels();
+    allOff();
 }
 
 void setChannelInstrument(int channel, int instr)
