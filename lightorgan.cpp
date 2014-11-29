@@ -17,7 +17,6 @@ snd_seq_event_t *midi_read();
 void myDigitalWrite(int pinIdx, int val);
 void pinOff(int id, char verbose);
 void pinOn(int id, char verbose);
-void setChannelInstrument(int channel, int instr);
 void setPinModes(int mode);
 void signalHandler(int signum);
 
@@ -175,8 +174,6 @@ void midi_process(snd_seq_event_t *ev)
 
         // Clear pins state, this is probably the beginning of a new song
         allOff();
-
-        setChannelInstrument(ev->data.control.channel, ev->data.control.value);
     }
 
     // If the event is SND_SEQ_EVENT_BOUNCE, then maybe this is an interrupt?
