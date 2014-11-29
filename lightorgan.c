@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <math.h>
+#include <signal.h>
 static snd_seq_t *seq_handle;
 static int in_port;
 
@@ -30,6 +31,23 @@ int channelActive = 1;
 #define THRUPORTCLIENT 14
 #define THRUPORTPORT 0
 
+/**
+ * Signal Handler
+ */
+void signalHandler(int signum)
+{
+    printf("Interrupt signal (%d) received", signum);
+
+    // Switch the pins back to input mode
+    int i;
+    for (i=0; i < TOTAL_PINS; i++) {
+        pinMode(pinMapping[i], INPUT);
+    }
+
+    // Now we can exit
+    exit(signum);
+}
+
 void midi_open(void)
 {
     snd_seq_open(&seq_handle, "default", SND_SEQ_OPEN_INPUT, 0);
@@ -55,13 +73,13 @@ snd_seq_event_t *midi_read(void)
 }
 
 
-//Currently playing note, by pin
+// Currently playing note, by pin
 int pinNotes[TOTAL_PINS];
 
-//Currently playing channel, by pin
+// Currently playing channel, by pin
 int pinChannels[TOTAL_PINS];
 
-//Enabled channels
+// Enabled channels
 int playChannels[16];
 
 
@@ -181,7 +199,7 @@ void midi_process(snd_seq_event_t *ev)
             pinOff(pinActive);
 
             // Reset to zero if we're above the number of pins
-            if (pinActive > TOTAL_PINS) {
+            if (pinActive >= TOTAL_PINS) {
                 printf("Resetting pinActive to zero\n");
                 pinActive = 0;
             } else {
@@ -205,12 +223,15 @@ void midi_process(snd_seq_event_t *ev)
 int main()
 {
 
-    //Setup wiringPi
+    // Setup wiringPi
     if (wiringPiSetup() == -1) {
         exit(1);
     }
-   
-    //Setup all the pins to use OUTPUT mode
+
+    // Register signal handler
+    signal(SIGINT, signalHandler);
+
+    // Setup all the pins to use OUTPUT mode
     int i=0;
     for(i=0; i< TOTAL_PINS; i++) {
         pinMode(pinMapping[i], OUTPUT);
@@ -219,10 +240,10 @@ int main()
     clearPinsState();
     allOff();
 
-    //Open a midi port, connect to thru port also
+    // Open a midi port, connect to through port also
     midi_open();
 
-    //Process events forever
+    // Process events forever
     while (1) {
         midi_process(midi_read());
     }
