@@ -31,6 +31,14 @@ int channelActive = 1;
 #define THRUPORTCLIENT 14
 #define THRUPORTPORT 0
 
+void setPinModes(int mode)
+{
+    int i;
+    for (i = 0; i < TOTAL_PINS; i++) {
+        pinMode(pinMapping[i], mode);
+    }
+}
+
 /**
  * Signal Handler
  */
@@ -39,10 +47,7 @@ void signalHandler(int signum)
     printf("Interrupt signal (%d) received", signum);
 
     // Switch the pins back to input mode
-    int i;
-    for (i=0; i < TOTAL_PINS; i++) {
-        pinMode(pinMapping[i], INPUT);
-    }
+    setPinModes(INPUT);
 
     // Now we can exit
     exit(signum);
@@ -112,14 +117,32 @@ void clearPinsState()
     clearPinChannels();
 }
 
-void pinOn(int id)
+void pinOn(int id, char verbose='n')
 {
-    myDigitalWrite(id, 0);
+    switch (verbose) {
+        case 'y':
+            myDigitalWrite(id, 0);
+            break;
+
+        case 'n':
+        default:
+            digitalWrite(id, 0);
+            break;
+    }
 }
 
-void pinOff(int id)
+void pinOff(int id, char verbose='n')
 {
-    myDigitalWrite(id, 1);
+    switch (verbose) {
+        case 'y':
+            myDigitalWrite(id, 1);
+            break;
+
+        case 'n':
+        default:
+            digitalWrite(id, 1);
+            break;
+    }
 }
 
 void allOn()
@@ -145,32 +168,9 @@ void setChannelInstrument(int channel, int instr)
 }
 
 
-int isPercussion(int instrVal)
-{
-    return instrVal >= 8 && instrVal <= 15;
-}
-
-int isPercussionChannel(int channel)
-{
-    int instr = playChannels[channel];
-    return isPercussion(instr);
-}
-
-
-int isBase(int instrVal)
-{
-    return instrVal >= 32 && instrVal <= 39;
-}
-int isSynth(int instrVal)
-{
-    return instrVal >= 88 && instrVal <= 103;
-}
-
-
-
 int choosePinIdx(int note, int channel)
 {
-    //Return the note modulated by the number of melody pins
+    // Return the note modulated by the number of melody pins
     int val = note  % (TOTAL_PINS * 2);
     return val / 2;
 }
@@ -180,14 +180,19 @@ void midi_process(snd_seq_event_t *ev)
 {
 
     // If this event is a PGMCHANGE type, it's a request to map a channel to an instrument
-//    if (ev->type == SND_SEQ_EVENT_PGMCHANGE) {
-//        //printf("PGMCHANGE: channel %2d, %5d, %5d\n", ev->data.control.channel, ev->data.control.param,  ev->data.control.value);
-//
-//        //Clear pins state, this is probably the beginning of a new song
-//        clearPinsState();
-//
-//        setChannelInstrument(ev->data.control.channel, ev->data.control.value);
-//    }
+    if (ev->type == SND_SEQ_EVENT_PGMCHANGE) {
+        //printf("PGMCHANGE: channel %2d, %5d, %5d\n", ev->data.control.channel, ev->data.control.param,  ev->data.control.value);
+
+        // Clear pins state, this is probably the beginning of a new song
+        clearPinsState();
+
+        setChannelInstrument(ev->data.control.channel, ev->data.control.value);
+    }
+
+    // If the event is SND_SEQ_EVENT_BOUNCE, then maybe this is an interrupt?
+    if (ev->type == SND_SEQ_EVENT_BOUNCE) {
+        allOff();
+    }
 
     if (channelActive == ev->data.control.channel) {
         // Note on/off event
@@ -232,10 +237,7 @@ int main()
     signal(SIGINT, signalHandler);
 
     // Setup all the pins to use OUTPUT mode
-    int i=0;
-    for(i=0; i< TOTAL_PINS; i++) {
-        pinMode(pinMapping[i], OUTPUT);
-    }
+    setPinModes(OUTPUT);
 
     clearPinsState();
     allOff();

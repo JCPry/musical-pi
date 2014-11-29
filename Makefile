@@ -1,6 +1,6 @@
 
 all:
-	gcc lightorgan.c -lasound -lwiringPi -g -Wall -o lightorgan
+	gcc lightorgan.cpp -lasound -lwiringPi -g -Wall -o lightorgan
 
 inst: all
 	sudo cp lightorgan /usr/sbin
