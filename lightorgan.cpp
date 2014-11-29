@@ -34,7 +34,7 @@ const int THRUPORTCLIENT = 14;
 const int THRUPORTPORT = 0;
 
 // The currently active pin.
-int pinActive;
+int pinActive = -1;
 
 // Channel to monitor for events
 int channelActive = 1;
@@ -185,21 +185,27 @@ void midi_process(snd_seq_event_t *ev)
         // Note on/off event
         if (ev->type == SND_SEQ_EVENT_NOTEON) {
 
-            printf("Turning off pin %d\n", pinActive);
-
-            // First turn off the current pin
-            pinOff(pinActive);
-
-            // Reset to zero if we're above the number of pins
-            if (pinActive >= TOTAL_PINS) {
-                printf("Resetting pinActive to zero\n");
+            // When pinActive is -1, we're playing the first note
+            if (-1 == pinActive) {
                 pinActive = 0;
             } else {
+                // First turn off the current pin
+                printf("Turning off pin %d\n", pinActive);
+                pinOff(pinActive);
+
+                // Increment pinActive
                 printf("Incrementing pinActive\n");
                 pinActive++;
+
+                // Reset to zero if we're above the number of pins
+                if (pinActive >= TOTAL_PINS) {
+                    printf("Resetting pinActive to zero\n");
+                    pinActive = 0;
+                }
             }
 
             // Turn on the next pin
+            printf("Turning on pin %d", pinActive);
             pinOn(pinActive);
         }
     }
