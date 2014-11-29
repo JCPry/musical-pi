@@ -24,12 +24,15 @@ void signalHandler(int signum);
 // Constants
 
 // The total number of pins available.
-int pinMapping[] = {
-0,
-1,
-2,
-3,
+const int pinMapping[] = {
+    0,
+    1,
+    2,
+    3,
 };
+const int TOTAL_PINS = sizeof(pinMapping) / sizeof(int);
+const int THRUPORTCLIENT = 14;
+const int THRUPORTPORT = 0;
 
 // The currently active pin.
 int pinActive;
