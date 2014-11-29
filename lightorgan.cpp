@@ -22,16 +22,15 @@ void signalHandler(int signum);
 
 // Constants
 
-// The total number of pins available.
 const int pinMapping[] = {
     0,
     1,
     2,
     3,
 };
-const int TOTAL_PINS = sizeof(pinMapping) / sizeof(int);
+const int TOTAL_PINS     = sizeof(pinMapping) / sizeof(int);
 const int THRUPORTCLIENT = 14;
-const int THRUPORTPORT = 0;
+const int THRUPORTPORT   = 0;
 
 // The currently active pin.
 int pinActive = -1;
@@ -41,7 +40,6 @@ int channelActive = 1;
 
 int main()
 {
-
     // Setup wiringPi
     if (wiringPiSetup() == -1) {
         exit(1);
@@ -76,7 +74,7 @@ void setPinModes(int mode)
 
 void signalHandler(int signum)
 {
-    printf("Interrupt signal (%d) received", signum);
+    printf("Interrupt signal (%d) received. Quitting!\n", signum);
 
     // Switch the pins back to input mode
     setPinModes(INPUT);
@@ -94,8 +92,8 @@ void midi_open(void)
                                          SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
                                          SND_SEQ_PORT_TYPE_APPLICATION);
 
-    if( snd_seq_connect_from(seq_handle, in_port, THRUPORTCLIENT, THRUPORTPORT) == -1) {
-        perror("Can't connect to thru port");
+    if (snd_seq_connect_from(seq_handle, in_port, THRUPORTCLIENT, THRUPORTPORT) == -1) {
+        perror("Can't connect to through port\n");
         exit(-1);
     }
 
@@ -145,7 +143,7 @@ void pinOff(int id, char verbose='n')
 void allOn()
 {
     int i;
-    for(i=0; i< TOTAL_PINS; i++) {
+    for (i = 0; i < TOTAL_PINS; i++) {
         pinOn(i);
     }
 }
@@ -153,7 +151,7 @@ void allOn()
 void allOff()
 {
     int i;
-    for(i = 0; i< TOTAL_PINS; i++) {
+    for (i = 0; i < TOTAL_PINS; i++) {
         pinOff(i);
     }
 }
@@ -205,7 +203,7 @@ void midi_process(snd_seq_event_t *ev)
             }
 
             // Turn on the next pin
-            printf("Turning on pin %d", pinActive);
+            printf("Turning on pin %d\n", pinActive);
             pinOn(pinActive);
         }
     }
