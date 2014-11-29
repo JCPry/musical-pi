@@ -40,9 +40,32 @@ int pinActive;
 // Channel to monitor for events
 int channelActive = 1;
 
-#define TOTAL_PINS sizeof(pinMapping) / sizeof(int)
-#define THRUPORTCLIENT 14
-#define THRUPORTPORT 0
+int main()
+{
+
+    // Setup wiringPi
+    if (wiringPiSetup() == -1) {
+        exit(1);
+    }
+
+    // Register signal handler
+    signal(SIGINT, signalHandler);
+
+    // Setup all the pins to use OUTPUT mode
+    setPinModes(OUTPUT);
+
+    allOff();
+
+    // Open a midi port, connect to through port also
+    midi_open();
+
+    // Process events forever
+    while (true) {
+        midi_process(midi_read());
+    }
+    
+    return -1;
+}
 
 void setPinModes(int mode)
 {
@@ -236,33 +259,4 @@ void midi_process(snd_seq_event_t *ev)
     }
 
     snd_seq_free_event(ev);
-}
-
-
-int main()
-{
-
-    // Setup wiringPi
-    if (wiringPiSetup() == -1) {
-        exit(1);
-    }
-
-    // Register signal handler
-    signal(SIGINT, signalHandler);
-
-    // Setup all the pins to use OUTPUT mode
-    setPinModes(OUTPUT);
-
-    clearPinsState();
-    allOff();
-
-    // Open a midi port, connect to through port also
-    midi_open();
-
-    // Process events forever
-    while (1) {
-        midi_process(midi_read());
-    }
-
-    return -1;
 }
