@@ -154,7 +154,7 @@ void allOn()
 void allOff()
 {
     int i;
-    for(i=0; i< TOTAL_PINS; i++) {
+    for(i = 0; i< TOTAL_PINS; i++) {
         pinOff(i);
     }
 }
