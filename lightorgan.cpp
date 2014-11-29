@@ -204,9 +204,5 @@ void midi_process(snd_seq_event_t *ev)
         }
     }
 
-    else {
-        printf("Unhandled event %2d\n", ev->type);
-    }
-
     snd_seq_free_event(ev);
 }
